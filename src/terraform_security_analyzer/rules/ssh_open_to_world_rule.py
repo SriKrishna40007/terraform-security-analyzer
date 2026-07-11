@@ -12,28 +12,30 @@ class SSHOpenToWorldRule(Rule):
         self,
         resource: TerraformResource,
     ) -> list[Finding]:
-
-        print("=" * 50)
-        print(resource)
-        print(resource.resource_type)
-        print(resource.resource_name)
-        print(resource.attributes)
+        """
+        Evaluate a Terraform resource for publicly accessible SSH.
+        """
 
         findings: list[Finding] = []
 
+        # Only evaluate Security Groups
         if resource.resource_type != "aws_security_group":
             return findings
 
+        # Check every ingress rule
         for ingress in resource.attributes.get("ingress", []):
 
-            print("Ingress:", ingress)
+            # Remove quotes added by python-hcl2
+            cidr_blocks = [
+                cidr.strip('"')
+                for cidr in ingress.get("cidr_blocks", [])
+            ]
 
             if (
                 ingress.get("from_port") == 22
                 and ingress.get("to_port") == 22
-                and "0.0.0.0/0" in ingress.get("cidr_blocks", [])
+                and "0.0.0.0/0" in cidr_blocks
             ):
-
                 findings.append(
                     Finding(
                         rule_id="AWS001",
@@ -41,7 +43,7 @@ class SSHOpenToWorldRule(Rule):
                         title="SSH Open to Internet",
                         resource=resource.resource_name,
                         recommendation=(
-                            "Restrict SSH access to trusted IP addresses."
+                            "Restrict SSH access to trusted IP addresses instead of 0.0.0.0/0."
                         ),
                     )
                 )

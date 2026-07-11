@@ -45,6 +45,5 @@ def scan(file_path: str):
 
     typer.echo(report)
 
-
 if __name__ == "__main__":
     app()
