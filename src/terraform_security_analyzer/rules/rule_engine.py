@@ -8,6 +8,9 @@ from terraform_security_analyzer.rules.ssh_open_to_world_rule import (
 from terraform_security_analyzer.rules.public_s3_bucket_rule import (
     PublicS3BucketRule,
 )
+from terraform_security_analyzer.rules.iam_wildcard_rule import (
+    IAMWildcardRule,
+)
 
 
 class RuleEngine:
@@ -20,6 +23,7 @@ class RuleEngine:
         self.rules: list[Rule] = [
             SSHOpenToWorldRule(),
             PublicS3BucketRule(),
+            IAMWildcardRule(),
         ]
 
     def evaluate(
@@ -30,11 +34,7 @@ class RuleEngine:
         findings: list[Finding] = []
 
         for resource in resources:
-
             for rule in self.rules:
-
-                findings.extend(
-                    rule.evaluate(resource)
-                )
+                findings.extend(rule.evaluate(resource))
 
         return findings
