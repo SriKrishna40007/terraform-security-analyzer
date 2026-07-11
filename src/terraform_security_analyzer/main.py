@@ -2,7 +2,14 @@ from pathlib import Path
 
 import typer
 
+from terraform_security_analyzer.extractor.resource_extractor import (
+    ResourceExtractor,
+)
+from terraform_security_analyzer.formatter.cli_formatter import (
+    CLIFormatter,
+)
 from terraform_security_analyzer.parser.hcl_parser import HCLParser
+from terraform_security_analyzer.rules.rule_engine import RuleEngine
 
 app = typer.Typer(
     help="Production-ready Terraform Security Analyzer"
@@ -24,11 +31,19 @@ def scan(file_path: str):
     """
 
     parser = HCLParser()
+    extractor = ResourceExtractor()
+    engine = RuleEngine()
+    formatter = CLIFormatter()
 
-    terraform_data = parser.parse_file(Path(file_path))
+    parsed_data = parser.parse_file(Path(file_path))
 
-    typer.echo("✅ Terraform parsed successfully.")
-    typer.echo(terraform_data)
+    resources = extractor.extract(parsed_data)
+
+    findings = engine.evaluate(resources)
+
+    report = formatter.format(findings)
+
+    typer.echo(report)
 
 
 if __name__ == "__main__":
