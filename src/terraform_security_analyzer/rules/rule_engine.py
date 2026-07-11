@@ -20,7 +20,9 @@ from terraform_security_analyzer.rules.unencrypted_ebs_rule import (
 from terraform_security_analyzer.rules.s3_versioning_rule import (
     S3VersioningRule,
 )
-
+from terraform_security_analyzer.rules.s3_encryption_rule import (
+    S3EncryptionRule,
+)
 class RuleEngine:
     """
     Executes all registered security rules.
@@ -35,6 +37,7 @@ class RuleEngine:
             PublicRDSRule(),
             UnencryptedEBSRule(),
             S3VersioningRule(),
+            S3EncryptionRule(),
         ]
         
 
