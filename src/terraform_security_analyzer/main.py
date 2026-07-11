@@ -10,6 +10,9 @@ from terraform_security_analyzer.formatter.cli_formatter import (
 )
 from terraform_security_analyzer.parser.hcl_parser import HCLParser
 from terraform_security_analyzer.rules.rule_engine import RuleEngine
+from terraform_security_analyzer.scoring.security_score import (
+    SecurityScoreCalculator,
+)
 
 app = typer.Typer(
     help="Production-ready Terraform Security Analyzer"
@@ -34,6 +37,7 @@ def scan(file_path: str):
     extractor = ResourceExtractor()
     engine = RuleEngine()
     formatter = CLIFormatter()
+    score_calculator = SecurityScoreCalculator()
 
     parsed_data = parser.parse_file(Path(file_path))
 
@@ -41,9 +45,15 @@ def scan(file_path: str):
 
     findings = engine.evaluate(resources)
 
-    report = formatter.format(findings)
+    security_score = score_calculator.calculate(findings)
+
+    report = formatter.format(
+        findings=findings,
+        security_score=security_score,
+    )
 
     typer.echo(report)
+
 
 if __name__ == "__main__":
     app()

@@ -9,20 +9,23 @@ class CLIFormatter:
     def format(
         self,
         findings: list[Finding],
+        security_score: int,
     ) -> str:
         """
         Convert findings into a human-readable report.
         """
-
-        if not findings:
-            return "✓ No security findings detected."
 
         lines = []
 
         lines.append("=" * 60)
         lines.append("Terraform Security Analyzer")
         lines.append("=" * 60)
+        lines.append(f"Security Score : {security_score}/100")
         lines.append("")
+
+        if not findings:
+            lines.append("✓ No security findings detected.")
+            return "\n".join(lines)
 
         for finding in findings:
 
