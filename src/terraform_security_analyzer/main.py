@@ -9,6 +9,9 @@ from terraform_security_analyzer.formatter.cli_formatter import (
     CLIFormatter,
 )
 from terraform_security_analyzer.parser.hcl_parser import HCLParser
+from terraform_security_analyzer.reports.json_report import (
+    JSONReport,
+)
 from terraform_security_analyzer.rules.rule_engine import RuleEngine
 from terraform_security_analyzer.scoring.security_score import (
     SecurityScoreCalculator,
@@ -38,6 +41,7 @@ def scan(file_path: str):
     engine = RuleEngine()
     formatter = CLIFormatter()
     score_calculator = SecurityScoreCalculator()
+    report_generator = JSONReport()
 
     parsed_data = parser.parse_file(Path(file_path))
 
@@ -46,6 +50,8 @@ def scan(file_path: str):
     findings = engine.evaluate(resources)
 
     security_score = score_calculator.calculate(findings)
+
+    report_generator.generate(findings)
 
     report = formatter.format(
         findings=findings,
