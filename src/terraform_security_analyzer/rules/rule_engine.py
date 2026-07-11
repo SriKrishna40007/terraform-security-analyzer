@@ -1,8 +1,12 @@
 from terraform_security_analyzer.models.finding import Finding
 from terraform_security_analyzer.models.terraform_resource import TerraformResource
+
 from terraform_security_analyzer.rules.rule import Rule
 from terraform_security_analyzer.rules.ssh_open_to_world_rule import (
     SSHOpenToWorldRule,
+)
+from terraform_security_analyzer.rules.public_s3_bucket_rule import (
+    PublicS3BucketRule,
 )
 
 
@@ -15,6 +19,7 @@ class RuleEngine:
 
         self.rules: list[Rule] = [
             SSHOpenToWorldRule(),
+            PublicS3BucketRule(),
         ]
 
     def evaluate(
