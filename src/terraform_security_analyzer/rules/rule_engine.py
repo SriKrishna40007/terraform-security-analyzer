@@ -17,6 +17,9 @@ from terraform_security_analyzer.rules.public_rds_rule import (
 from terraform_security_analyzer.rules.unencrypted_ebs_rule import (
     UnencryptedEBSRule,
 )
+from terraform_security_analyzer.rules.s3_versioning_rule import (
+    S3VersioningRule,
+)
 
 class RuleEngine:
     """
@@ -31,6 +34,7 @@ class RuleEngine:
             IAMWildcardRule(),
             PublicRDSRule(),
             UnencryptedEBSRule(),
+            S3VersioningRule(),
         ]
         
 
