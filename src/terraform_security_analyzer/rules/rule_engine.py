@@ -11,6 +11,9 @@ from terraform_security_analyzer.rules.public_s3_bucket_rule import (
 from terraform_security_analyzer.rules.iam_wildcard_rule import (
     IAMWildcardRule,
 )
+from terraform_security_analyzer.rules.public_rds_rule import (
+    PublicRDSRule,
+)
 
 
 class RuleEngine:
@@ -20,11 +23,13 @@ class RuleEngine:
 
     def __init__(self):
 
-        self.rules: list[Rule] = [
+        self.rules= [
             SSHOpenToWorldRule(),
             PublicS3BucketRule(),
             IAMWildcardRule(),
+            PublicRDSRule(),
         ]
+        
 
     def evaluate(
         self,
