@@ -2,20 +2,7 @@ from pathlib import Path
 
 import typer
 
-from terraform_security_analyzer.extractor.resource_extractor import (
-    ResourceExtractor,
-)
-from terraform_security_analyzer.formatter.cli_formatter import (
-    CLIFormatter,
-)
-from terraform_security_analyzer.parser.hcl_parser import HCLParser
-from terraform_security_analyzer.reports.json_report import (
-    JSONReport,
-)
-from terraform_security_analyzer.rules.rule_engine import RuleEngine
-from terraform_security_analyzer.scoring.security_score import (
-    SecurityScoreCalculator,
-)
+from terraform_security_analyzer.scanner import TerraformScanner
 
 app = typer.Typer(
     help="Production-ready Terraform Security Analyzer"
@@ -36,29 +23,11 @@ def scan(file_path: str):
     Scan a Terraform configuration file.
     """
 
-    parser = HCLParser()
-    extractor = ResourceExtractor()
-    engine = RuleEngine()
-    formatter = CLIFormatter()
-    score_calculator = SecurityScoreCalculator()
-    report_generator = JSONReport()
+    scanner = TerraformScanner()
 
-    parsed_data = parser.parse_file(Path(file_path))
+    result = scanner.scan(Path(file_path))
 
-    resources = extractor.extract(parsed_data)
-
-    findings = engine.evaluate(resources)
-
-    security_score = score_calculator.calculate(findings)
-
-    report_generator.generate(findings)
-
-    report = formatter.format(
-        findings=findings,
-        security_score=security_score,
-    )
-
-    typer.echo(report)
+    typer.echo(result["report"])
 
 
 if __name__ == "__main__":
