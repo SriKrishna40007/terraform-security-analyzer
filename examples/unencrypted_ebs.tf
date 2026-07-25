@@ -1,0 +1,9 @@
+resource "aws_ebs_volume" "logs" {
+
+  availability_zone = "us-east-1a"
+
+  size = 100
+
+  encrypted = false
+
+}
