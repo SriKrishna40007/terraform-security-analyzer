@@ -54,6 +54,7 @@ class TerraformScanner:
         )
 
         return {
+            "resources": resources,
             "findings": findings,
             "security_score": security_score,
             "report": report,
